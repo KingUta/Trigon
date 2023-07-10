@@ -2,13 +2,13 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'Expo Firebase Starter',
-    slug: 'expo-firebase',
+    name: 'Trigon',
+    slug: 'Mentalhealthapp',
     privacy: 'public',
     platforms: ['ios', 'android'],
     version: '0.15.0',
     orientation: 'portrait',
-    icon: './assets/flame.png',
+    icon: './assets/Trigon.png',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'cover',

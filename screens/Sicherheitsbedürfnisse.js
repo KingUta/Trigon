@@ -2,34 +2,26 @@ import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const GnbScreen = () => {
+const Sicherheitsbedürfnisse = () => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DrinkReminder')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Journal')}>
           <Image
             style={styles.image}
-            source={require('../assets/Drink.png')}
+            source={require('../assets/journal.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SleepTracker')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Stimmung Tracker')}>
           <Image
             style={styles.image}
-            source={require('../assets/sleep.png')}
+            source={require('../assets/stimmung.png')}
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Atem Übungen')}>
-          <Image
-            style={styles.image}
-            source={require('../assets/atem.png')}
-          />
-        
-        </TouchableOpacity>
-      </View>
+     
     </View>
   );
 };
@@ -62,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GnbScreen;
+export default Sicherheitsbedürfnisse;

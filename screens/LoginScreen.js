@@ -20,6 +20,8 @@ export const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, email, password).catch(error =>
       setErrorState(error.message)
     );
+    
+
   };
   return (
     <>

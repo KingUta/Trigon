@@ -2,34 +2,26 @@ import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const GnbScreen = () => {
+const Selbstverwirklichung = () => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DrinkReminder')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Quote Generator')}>
           <Image
             style={styles.image}
-            source={require('../assets/Drink.png')}
+            source={require('../assets/quotes.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SleepTracker')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Selbst Reflexion')}>
           <Image
             style={styles.image}
-            source={require('../assets/sleep.png')}
+            source={require('../assets/reflexion.png')}
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Atem Übungen')}>
-          <Image
-            style={styles.image}
-            source={require('../assets/atem.png')}
-          />
-        
-        </TouchableOpacity>
-      </View>
+     
     </View>
   );
 };
@@ -62,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GnbScreen;
+export default Selbstverwirklichung;

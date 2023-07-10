@@ -8,26 +8,26 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-       <Button 
+       <Button  stlye={StyleSheet.Button1}
     title="Quiz" 
     onPress={() => navigation.navigate('Quiz')} 
   />
   <ScrollView>
  
   <View>
-    <TouchableOpacity onPress={() => navigation.navigate('GrundBedürfnisse')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Selbstverwirklichung')}>
       <Image style={styles.bilder1} source={require('../assets/Selbstverwirklichung.png')} />
     </TouchableOpacity>
   
-    <TouchableOpacity onPress={() => navigation.navigate('GrundBedürfnisse')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Individualbedürfnisse')}>
       <Image style={styles.bilder2} source={require('../assets/Individual.png')} />
     </TouchableOpacity>
   
-    <TouchableOpacity onPress={() => navigation.navigate('GrundBedürfnisse')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Sozialebedürfnisse')}>
       <Image style={styles.bilder3} source={require('../assets/Sozial.png')} />
     </TouchableOpacity>
   
-    <TouchableOpacity onPress={() => navigation.navigate('GrundBedürfnisse')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Sicherheitsbedürfnisse')}>
       <Image style={styles.bilder4} source={require('../assets/Sicherheit.png')} />
     </TouchableOpacity>
 
@@ -56,15 +56,15 @@ const styles = StyleSheet.create({
   },
   bilder2: {
     resizeMode: 'center',
-    width: 350,
+    width: 360,
     height: 100,
-    marginBottom: 0, // Verwenden Sie CamelCase für marginBottom
-    marginTop: 20, // Verwenden Sie CamelCase für marginTop
+    marginBottom: 10, // Verwenden Sie CamelCase für marginBottom
+    marginTop: 10, // Verwenden Sie CamelCase für marginTop
     marginVertical: -30,
   },
   bilder3: {
     resizeMode: 'center',
-    width: 350,
+    width: 355,
     height: 100,
     marginBottom: 0, // Verwenden Sie CamelCase für marginBottom
     marginTop: 10, // Verwenden Sie CamelCase für marginTop
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   bilder4: {
     resizeMode: 'center',
-    width: 350,
+    width: 360,
     height: 150,
     marginBottom: 0, // Verwenden Sie CamelCase für marginBottom
     marginTop: 10, // Verwenden Sie CamelCase für marginTop
@@ -80,11 +80,15 @@ const styles = StyleSheet.create({
   },
   bilder5: {
     resizeMode: 'center',
-    width: 550,
+    width: 360,
     height: 370,
     
     marginBottom: 0, // Verwenden Sie CamelCase für marginBottom
-    marginTop: -30, // Verwenden Sie CamelCase für marginTop
+    marginTop: -60, // Verwenden Sie CamelCase für marginTop
+
+  },
+  Button1: {
+    margin: 'center',
 
   },
 
