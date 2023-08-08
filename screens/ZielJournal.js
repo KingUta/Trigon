@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, Button, FlatList, TouchableOpacity, Text } from 'react-native';
-import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query } from 'firebase/firestore';
-import { db } from '../config/firebase'; // Update this with your path
-import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, setDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Colors from "../constants/colors";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const auth = getAuth();
+
+const createUserDocument = async (userId) => {
+  try {
+    const userDocRef = doc(db, 'users', userId);
+    const initialUserData = {
+      userId: userId,
+    };
+    await setDoc(userDocRef, initialUserData);
+    console.log('User document created in Firestore');
+  } catch (error) {
+    console.error('Error creating user document:', error);
+  }
+};
 
 const List = () => {
   const [todos, setTodos] = useState([]);
@@ -14,16 +29,21 @@ const List = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return unsubscribe; // Unsubscribe on unmount
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user) {
+        createUserDocument(user.uid);
+      }
+    });
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
     if (user) {
       const todoRef = collection(db, `todos/${user.uid}/userTodos`);
-      const subscriber = onSnapshot(todoRef, snapshot => {
+      const subscriber = onSnapshot(todoRef, (snapshot) => {
         const todos = [];
-        snapshot.docs.forEach(doc => {
+        snapshot.docs.forEach((doc) => {
           todos.push({
             id: doc.id,
             ...doc.data(),
@@ -33,9 +53,9 @@ const List = () => {
         setTodos(todos);
       });
 
-      return () => subscriber(); // Unsubscribe on unmount
+      return () => subscriber();
     }
-  }, [user]); // This will re-run whenever `user` changes
+  }, [user]);
 
   const addTodo = async () => {
     if (user) {
@@ -46,8 +66,8 @@ const List = () => {
         });
         setTodo('');
         console.log('Document written with ID: ', docRef.id);
-      } catch (e) {
-        console.error('Error adding document: ', e);
+      } catch (error) {
+        console.error('Error adding document: ', error);
       }
     } else {
       console.log('User not authenticated');
@@ -70,9 +90,9 @@ const List = () => {
         <TouchableOpacity onPress={toggleDone} style={styles.todo}>
           {item.done && <Ionicons name="md-checkmark-circle" size={32} color="green" />}
           {!item.done && <Entypo name="circle" size={32} color="black" />}
-          <Text style={styles.todoText}>{item.title}</Text>
+          <Text style={[styles.todoText, item.done && styles.done]}>{item.title}</Text>
         </TouchableOpacity>
-        <Ionicons name="trash-bin-outline" size={24} color="red" onPress={deleteItem} />
+        <FontAwesome name="trash-o" size={20} color="red" onPress={deleteItem}  />
       </View>
     );
   };
@@ -86,7 +106,9 @@ const List = () => {
           onChangeText={(text) => setTodo(text)}
           value={todo}
         />
-        <Button onPress={addTodo} title="Ziel Adden" disabled={todo === ''} />
+        <TouchableOpacity onPress={addTodo} style={styles.ZielButton} disabled={todo === ''}>
+          <Text style={styles.ZielText}>Add</Text>
+        </TouchableOpacity>
       </View>
       {todos.length > 0 && (
         <FlatList
@@ -99,6 +121,11 @@ const List = () => {
   );
 };
 
+const colors = {
+  purple: '#6c5ce7',
+  white: '#ffffff',
+};
+
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20
@@ -109,7 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   input: {
-    flex: 1,
+    flex: 0.8,
     height: 40,
     borderWidth: 1,
     borderRadius: 4,
@@ -123,14 +150,36 @@ const styles = StyleSheet.create({
   },
   todoText: {
     flex: 1,
-    paddingHorizontal: 4
+    paddingHorizontal: 4,
+    fontSize: 18
+  },
+  done: {
+    textDecorationLine: 'line-through',
+    color: 'gray'
   },
   todoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 10,
-    marginVertical: 4
+    marginVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0'
+  },
+  ZielButton: {
+    flex: 0.2,
+    backgroundColor: Colors.purple,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginLeft: 10,
+  },
+  ZielText: {
+    fontSize: 16,
+    color: Colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
   }
 });
 

@@ -5,6 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from "firebase/firestore"
 
 
+
+
+
 // add firebase config
 const firebaseConfig = {
   apiKey: Constants.manifest.extra.apiKey,
@@ -13,6 +16,7 @@ const firebaseConfig = {
   storageBucket: Constants.manifest.extra.storageBucket,
   messagingSenderId: Constants.manifest.extra.messagingSenderId,
   appId: Constants.manifest.extra.appId,
+  databaseURL: Constants.manifest.extra.databaseURL,
 };
 
 // initialize firebase

@@ -3,7 +3,7 @@ import 'dotenv/config';
 export default {
   expo: {
     name: 'Trigon',
-    slug: 'Mentalhealthapp',
+    slug: 'Trigon',
     privacy: 'public',
     platforms: ['ios', 'android'],
     version: '0.15.0',
@@ -15,7 +15,7 @@ export default {
       backgroundColor: '#F57C00'
     },
     updates: {
-      fallbackToCacheTimeout: 0
+      fallbackToCacheTimeout: 1
     },
     assetBundlePatterns: ['**/*'],
     ios: {

@@ -8,10 +8,10 @@ const Selbstverwirklichung = () => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Quote Generator')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Podcasts')}>
           <Image
             style={styles.image}
-            source={require('../assets/quotes.png')}
+            source={require('../assets/Podcast.png')}
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Selbst Reflexion')}>
