@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Button, FlatList, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TextInput, Button, FlatList, TouchableOpacity, Text, BackHandler } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,6 +25,7 @@ const createUserDocument = async (userId) => {
 };
 
 const List = () => {
+  const navigation = useNavigation();
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState('');
   const [user, setUser] = useState(null);
@@ -37,6 +39,22 @@ const List = () => {
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to individual');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Individualbedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+  
 
   useEffect(() => {
     if (user) {

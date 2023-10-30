@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Modal, SafeAreaView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Modal, SafeAreaView, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Colors } from '../config/theme';
@@ -9,14 +9,13 @@ import colors from '../constants/colors';
 const InfoButton = ({ animation }) => {
   const [modalVisible, setModalVisible] = useState(0);
   const infoTexts = [
-    "Info zu Quiz, Willkommen lieber User auf Trigon diese App ist auf der Bedürfnisspyramide aufgebaut! Es soll dir dabei helfen deine Grundbedürfnisse aufzuarbeiten. Im Quiz findest du eine reihe an Fragen die dir helfen zu ergründen welche Bedürfnisse du aufarbeiten solltest!",
-    "Info zu Grundbedürfniss, Lieber User unter Grundbedürfnisse kannst du deine Grundbedürfnisse auf arbeiten zurzeit haben wir eine Schlaftracker und eine Trinkreminder das ganze rundet eine Achstamkeit Atem Übung ab ",
-    "Info zu Sicherheitsbedürfnisse findest du unseren Stimmungstracker der soll dir dabei helfen, stimmungen gekonnt zu Dokumentieren um in einem Späteren zeitpunkt massnahmen darauf zu Treffen, im Journal findest du all deine Daten des Stimmungstrackers sowie auch die Funktion Erinnerungen zu setzen um dich daran zu erinnern Stimmungstracker zu werden",
-    "Info zu Sozialebedürnisse, unter sozialbedürfnisse findes du eine Minianwendung wo du Fragen and dieses Netzwerk stellen kannst, das ganze ist Anonym deshalb solltest du keine Angst haben Fragen zu stellen!",
-    "Info zu Individualbedürfnisse, unter Individualbedürfnisse hast du die Möglichkeit deine Ziele aufzulisten, damit du Sie immer vor augen hast, es gibt da auch einen Motivationsgenerator der dir Täglich Motivierende Zitate generiert und zu deiner Gewünschten Zeit als Benachrichtigung anzeigt",
-    "Info zu Selbstverwirklichung, unter Selbstverwirklichung kannst du mit der Podcastapp auf eine Reise gehen und dich Selbstverwirklichen, wir haben zuoberst eine kleine Recomendation!"
+    "Info zum Quiz: Willkommen, lieber User, bei Trigon! Diese App ist auf der Bedürfnispyramide aufgebaut und soll dir dabei helfen, deine Grundbedürfnisse aufzuarbeiten. Im Quiz findest du eine Reihe an Fragen, die dir helfen, zu ergründen, welche Bedürfnisse du bearbeiten solltest.",
+    "Info zu Grundbedürfnissen: Lieber User, unter 'Grundbedürfnisse' kannst du deine Grundbedürfnisse bearbeiten. Zurzeit bieten wir einen Schlaftracker und einen Trinkreminder an. Das Ganze wird durch eine Achtsamkeits-Atemübung abgerundet.",
+    "Info zu Sicherheitsbedürfnissen: Unter 'Sicherheitsbedürfnisse' findest du unseren Stimmungstracker, der dir dabei helfen soll, Stimmungen gekonnt zu dokumentieren, um zu einem späteren Zeitpunkt Maßnahmen darauf zu treffen. Im Journal findest du all deine Daten des Stimmungstrackers sowie auch die Funktion, Erinnerungen zu setzen, um dich daran zu erinnern, den Stimmungstracker zu verwenden.",
+    "Info zu Sozialbedürfnissen: Unter 'Sozialbedürfnissen' findest du eine Mini-Anwendung, mit der du Fragen an dieses Netzwerk stellen kannst. Das Ganze ist anonym, deshalb solltest du keine Angst haben, Fragen zu stellen!",
+    "Info zu Individualbedürfnissen: Unter 'Individualbedürfnissen' hast du die Möglichkeit, deine Ziele aufzulisten, damit du sie immer vor Augen hast. Es gibt auch einen Motivationsgenerator, der dir täglich motivierende Zitate generiert und zu deiner gewünschten Zeit als Benachrichtigung anzeigt.",
+    "Info zur Selbstverwirklichung: Unter 'Selbstverwirklichung' kannst du mit der Podcast-App auf eine Reise gehen und dich selbst verwirklichen. Wir haben oben eine kleine Empfehlung für dich!"
   ];
-
   return (
     <View>
       <TouchableOpacity 
@@ -57,7 +56,6 @@ const InfoButton = ({ animation }) => {
     </View>
   );
 }
-
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [isDay, setIsDay] = useState(true);
@@ -227,7 +225,7 @@ const styles = StyleSheet.create({
 
   },
   skyanimation: {
-    ...StyleSheet.absoluteFillObject,
+    resizeMode: 'cover',
   },
 
   quizButton: {

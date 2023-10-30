@@ -57,7 +57,7 @@ export const AppStack = () => {
         <Drawer.Screen name="DrinkReminder" title={styles.drawerHeader} component={DrinkReminder} options={{  drawerItemStyle: { height: 0 } }} />
         <Drawer.Screen name="Atem Übungen" component={AtemScreen} options={{  drawerItemStyle: { height: 0 } }} />
         <Drawer.Screen name="SleepTracker" component={SleepScreen} options={{  drawerItemStyle: { height: 0 } }} />
-        <Drawer.Screen name="Stimmung Tracker" component={StimmungTracker} options={{  drawerItemStyle: { height: 0 } }} />
+        <Drawer.Screen name="Stimmungs Tracker" component={StimmungTracker} options={{  drawerItemStyle: { height: 0 } }} />
         <Drawer.Screen name="Journal" component={Journal} options={{  drawerItemStyle: { height: 0 } }} />
         <Drawer.Screen name="Netzwerk" component={NetzwerkScreen} options={{  drawerItemStyle: { height: 0 } }} />
         <Drawer.Screen name="Ziele" component={ZielJournal} options={{  drawerItemStyle: { height: 0 } }} />

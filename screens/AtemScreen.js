@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React,{useEffect} from 'react';
+import { View, StyleSheet, Text, TouchableOpacity,BackHandler } from 'react-native';
 import colors from '../constants/colors';
 
 const AtemScreen = ({ navigation }) => {
@@ -7,6 +7,21 @@ const AtemScreen = ({ navigation }) => {
   const navigateToGuidedBreathTechnique = (breathTechnique) => {
     navigation.navigate('GuidedBreathTechnique', { breathTechnique });
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to GNBScreen');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'GrundBedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

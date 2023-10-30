@@ -1,13 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, BackHandler } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import colors from '../constants/colors';
 
-const SelfReflectionScreen = () => {
+const SelfReflectionScreen = ({navigation}) => {
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to selbst');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Selbstverwirklichung' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
+
+
+
+
   const questions = [
     'Was habe ich heute gelernt?',
     'Wofür bin ich heute dankbar?',
@@ -23,6 +43,9 @@ const SelfReflectionScreen = () => {
   const [remainingTime, setRemainingTime] = useState(60);
   const timerRef = useRef(null);
   const animationRef = useRef(null);
+
+
+  
 
   useEffect(() => {
     if (user) {
@@ -66,13 +89,13 @@ const SelfReflectionScreen = () => {
   const handleDeleteAllData = async () => {
     if (user) {
       try {
-        const snapshot = await collection(db, `reflections/${user.uid}/userReflections`).get();
-        const batch = db.batch();
-        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-        await batch.commit();
-        console.log('All data deleted successfully!');
+        const userReflectionsCollection = collection(db, `reflections/${user.uid}/userReflections`);
+        const snapshot = await getDocs(userReflectionsCollection);
+        const deletePromises = snapshot.docs.map(docSnapshot => deleteDoc(docSnapshot.ref));
+        await Promise.all(deletePromises);
+        console.log('Daten erfolgreich gelöscht!');
       } catch (error) {
-        console.error('Error deleting data:', error);
+        console.error('Fehler beim löschen der Daten:', error);
       }
     }
   };
@@ -137,10 +160,10 @@ const SelfReflectionScreen = () => {
       setIsPaused(false);
       setRemainingTime(60);
       clearInterval(timerRef.current);
-      animationRef.current.reset(); // Reset the animation
+      animationRef.current.reset(); 
   
       if (currentQuestionIndex >= questions.length - 1) {
-        saveReflections();
+        saveReflections(); 
         setIsExerciseStarted(false);
         setIsPaused(false);
         setIsAnimationPlaying(false);
@@ -148,11 +171,12 @@ const SelfReflectionScreen = () => {
         setAnswers(['', '', '']);
       } else {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        startTimer(); // Start the timer for the next question
-        animationRef.current.play(); // Start the animation for the next question
+        startTimer();
+        animationRef.current.play(); 
       }
     }
   };
+  
 
   const handleAnswerChange = (text) => {
     setAnswers((prevAnswers) => {
@@ -161,6 +185,21 @@ const SelfReflectionScreen = () => {
       return newAnswers;
     });
   };
+
+  const handleFinishExercise = () => {
+    if (answers[currentQuestionIndex].trim().length > 0) {
+      saveReflections();
+      setIsExerciseStarted(false);
+      setIsPaused(false);
+      setIsAnimationPlaying(false);
+      setCurrentQuestionIndex(0);
+      setAnswers(['', '', '']);
+      setRemainingTime(60);
+      clearInterval(timerRef.current);
+      animationRef.current.reset();
+    }
+  }; 
+  
 
   return (
     <View style={styles.container}>
@@ -192,15 +231,21 @@ const SelfReflectionScreen = () => {
             <TouchableOpacity style={styles.pauseButton} onPress={handlePauseResume}>
               <Text style={styles.pauseButtonText}>{isPaused ? 'Fortsetzen' : 'Pausieren'}</Text>
             </TouchableOpacity>
-            {currentQuestionIndex < questions.length - 1 && (
+
+            {currentQuestionIndex < questions.length - 1 ? (
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNextQuestion}
-                disabled={answers[currentQuestionIndex].trim().length === 0} // Disable the button if no text in the answer
+                disabled={answers[currentQuestionIndex].trim().length === 0}
               >
                 <Text style={styles.nextButtonText}>Nächste Frage</Text>
               </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.finishButton} onPress={handleFinishExercise}>
+                <Text style={styles.finishButtonText}>Übung beenden</Text>
+              </TouchableOpacity>
             )}
+
             <TouchableOpacity style={styles.cancelButton} onPress={handleCancelExercise}>
               <Text style={styles.cancelButtonText}>Übung abbrechen</Text>
             </TouchableOpacity>
@@ -255,6 +300,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
   },
+  
   reflectionItem: {
     borderColor: colors.midGrey,
     borderWidth: 1,
@@ -364,6 +410,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+  },
+  finishButton: {
+    backgroundColor: colors.purple,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  finishButtonText: {
+    fontSize: 20,
+    color: colors.white,
+    fontWeight: 'bold',
   },
 });
 

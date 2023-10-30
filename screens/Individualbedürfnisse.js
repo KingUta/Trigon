@@ -1,9 +1,25 @@
-import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+
+import React, { useEffect } from 'react';
+import { View, TouchableOpacity, Image, StyleSheet, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Individualbedürfnisse = () => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'HomeScreen' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Modal, TouchableOpacity, Alert, Platform, Switch } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Modal, TouchableOpacity, Alert, Platform, Switch,BackHandler } from 'react-native';
 import { db } from '../config/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { onSnapshot, collection } from 'firebase/firestore';
@@ -8,13 +8,28 @@ import { requestPermissionsAsync, scheduleNotificationAsync, cancelAllScheduledN
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Colors from "../constants/colors";
 
-const JournalScreen = () => {
+const JournalScreen = ({navigation}) => {
   const [userEntries, setUserEntries] = useState([]);
   const [user, setUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [reminderTime, setReminderTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [reminderEnabled, setReminderEnabled] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to sicher');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Sicherheitsbedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
 
   useEffect(() => {
@@ -53,14 +68,14 @@ const JournalScreen = () => {
       requestPermissionsAsync().then(({ granted }) => {
         if (!granted) {
           Alert.alert(
-            'Notification permissions required',
-            'Please enable notifications in the device settings to receive reminders.'
+            'Benachrichtigungs rechte werden Benötigt',
+            'Bitte berechtigungen für diese App anpassen.'
           );
         } else {
           scheduleNotificationAsync({
             content: {
-              title: 'Journal Reminder',
-              body: 'Don\'t forget to fill in your mood tracker for today!',
+              title: 'Journal Erinnerung',
+              body: 'Vergiss nicht dein Journal weiter zu führen!',
             },
             trigger: reminderTime,
           });
@@ -139,7 +154,7 @@ const JournalScreen = () => {
         style={[styles.button, {backgroundColor: Colors.purple}]}
         onPress={handleOpenModal}
       >
-        <Text style={styles.textStyle}>Set Reminder</Text>
+        <Text style={styles.textStyle}>Erinnerung setzen</Text>
       </TouchableOpacity>
 
       {userEntries.map(entry => (
@@ -147,7 +162,7 @@ const JournalScreen = () => {
           <Text style={styles.dateText}>{new Date(entry.createdAt).toLocaleDateString()}</Text>
           <Text style={styles.moodText}>Stimmung: {entry.mood}</Text>
           <Text style={styles.reasonText}>Grund: {entry.reason}</Text>
-          <Text style={styles.noteText}>Notitzen: {entry.textInput}</Text>
+          <Text style={styles.noteText}>Notizen: {entry.textInput}</Text>
         </View>
       ))}
     </ScrollView>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextInput } from 'react-native';
 
-import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, FlatList, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, FlatList, Dimensions, ScrollView,BackHandler } from 'react-native';
 import { collection, addDoc, onSnapshot, doc, deleteDoc, query, orderBy, deleteCollection, getDocs } from 'firebase/firestore';
 import { LineChart } from 'react-native-chart-kit';
 import { db } from '../config/firebase';
@@ -9,7 +9,7 @@ import SleepModal from '../components/SleepModal';
 import { Colors } from '../config/theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const SleepScreen = () => {
+const SleepScreen = ({navigation}) => {
   const [sleepData, setSleepData] = useState([]);
   const [sleepQuality, setSleepQuality] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +17,21 @@ const SleepScreen = () => {
   useEffect(() => {
     fetchSleepData();
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to GNBScreen');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'GrundBedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
   const fetchSleepData = async () => {
     const sleepDataRef = collection(db, 'sleepData');

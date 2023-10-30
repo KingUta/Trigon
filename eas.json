@@ -1,0 +1,29 @@
+{
+  "cli": {
+    "version": ">= 4.0.1"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "API_KEY":"AIzaSyDFGfij8RZlM6GnqE5defwjPlsghSacc7k",
+        "AUTH_DOMAIN":"trigon-d2dd1.firebaseapp.com",
+        "PROJECT_ID":"trigon-d2dd1",
+        "STORAGE_BUCKET":"trigon-d2dd1.appspot.com",
+        "MESSAGING_SENDER_ID":"388013977498",
+        "APP_ID":"1:388013977498:web:39c67724aefe36a7899423"
+
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

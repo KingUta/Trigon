@@ -40,7 +40,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
           handleBlur
         }) => (
           <>
-            {/* Email input field */}
+
             <TextInput
               name='email'
               leftIconName='email'
@@ -53,18 +53,18 @@ export const ForgotPasswordScreen = ({ navigation }) => {
               onBlur={handleBlur('email')}
             />
             <FormErrorMessage error={errors.email} visible={touched.email} />
-            {/* Display Screen Error Mesages */}
+           
             {errorState !== '' ? (
               <FormErrorMessage error={errorState} visible={true} />
             ) : null}
-            {/* Password Reset Send Email  button */}
+        
             <Button style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Send Reset Email</Text>
             </Button>
           </>
         )}
       </Formik>
-      {/* Button to navigate to Login screen */}
+
       <Button
         style={styles.borderlessButtonContainer}
         borderless

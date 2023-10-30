@@ -6,13 +6,13 @@ export default {
     slug: 'Trigon',
     privacy: 'public',
     platforms: ['ios', 'android'],
-    version: '0.15.0',
+    version: '0.15.3',
     orientation: 'portrait',
     icon: './assets/Trigon.png',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'cover',
-      backgroundColor: '#F57C00'
+      backgroundColor: '#173147'
     },
     updates: {
       fallbackToCacheTimeout: 1
@@ -21,7 +21,15 @@ export default {
     ios: {
       supportsTablet: true
     },
+    android:{
+      package: 'com.nero.trigon',
+      versionCode: 4,
+
+    },
     extra: {
+      eas: {
+      projectId: '44e9918d-e039-4ab5-8c4e-1b2664bdfa2a'
+      },
       apiKey: process.env.API_KEY,
       authDomain: process.env.AUTH_DOMAIN,
       projectId: process.env.PROJECT_ID,

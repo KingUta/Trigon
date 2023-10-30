@@ -75,7 +75,7 @@ const Atmung1 = () => {
       <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>
-            Das hier ist eine Kontrollierte Atmungs Übung versuche mit der Animation zu Atmen und Kontrolliere dein Atem. Diese Übung hilft dir dabei: Stress abzubauen, Stress zu Managen, Migraine und angstzustände zu verringern.
+          "Das hier ist eine kontrollierte Atemübung. Versuche, mit der Animation zu atmen, und kontrolliere deinen Atem. Diese Übung hilft dir dabei: Stress abzubauen, Stress zu managen, Migräne zu lindern und Angstzustände zu verringern."
           </Text>
         </View>
       </Modal>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Button, FlatList, TouchableOpacity, Text, Modal } from 'react-native';
+import { View, StyleSheet, TextInput, Button, FlatList, TouchableOpacity, Text, Modal,BackHandler } from 'react-native';
 import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy, where, getDocs,getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -9,7 +9,7 @@ import { Colors } from '../config/theme';
 import colors from '../constants/colors';
 
 
-const NetzwerkScreen = () => {
+const NetzwerkScreen = ({navigation}) => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
   const [title, setTitle] = useState('');
@@ -20,6 +20,22 @@ const NetzwerkScreen = () => {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState('');
   const [filteredPosts, setFilteredPosts] = useState([]);
+
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to sozial');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Sozialebedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
   useEffect(() => {
     if (search === '') {
@@ -213,7 +229,7 @@ const NetzwerkScreen = () => {
                                 <Text style={styles.commentText}>{item.comment}</Text>
                                 <TouchableOpacity
                                     style={styles.deleteButton}
-                                    onPress={() => deleteComment(selectedPost.id, item.id, item.ownerId)} // Stellen Sie sicher, dass 'item.ownerId' hier übergeben wird
+                                    onPress={() => deleteComment(selectedPost.id, item.id, item.ownerId)} 
                                 >
                                     <FontAwesome name="trash-o" size={20} color="red" />
                                 </TouchableOpacity>
@@ -263,7 +279,7 @@ const NetzwerkScreen = () => {
       
       
       <TouchableOpacity style={styles.Post2Button}  onPress={addPost} disabled={!title || !content} >
-                          <Text style={styles.buttonText}>Post</Text>
+                          <Text style={styles.buttonText}>Beitrag teilen</Text>
       </TouchableOpacity>
 
       

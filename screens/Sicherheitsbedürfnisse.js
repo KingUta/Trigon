@@ -1,9 +1,26 @@
-import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import { View, TouchableOpacity, Image, StyleSheet,BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Sicherheitsbedürfnisse = () => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'HomeScreen' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
+
 
   return (
     <View style={styles.container}>
@@ -14,7 +31,7 @@ const Sicherheitsbedürfnisse = () => {
             source={require('../assets/journal.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Stimmung Tracker')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Stimmungs Tracker')}>
           <Image
             style={styles.image}
             source={require('../assets/stimmung.png')}

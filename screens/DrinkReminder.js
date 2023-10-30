@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Button, Switch, Alert, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect} from 'react';
+import { View, StyleSheet, Text, Button, Switch, Alert, TextInput, TouchableOpacity, BackHandler } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Colors } from '../config/theme';
 import { requestPermissionsAsync, scheduleNotificationAsync, cancelAllScheduledNotificationsAsync } from 'expo-notifications';
 import { collection, doc, updateDoc, onSnapshot, getDoc, setDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase'; // Make sure to import your Firebase config
+import { db } from '../config/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import colors from '../constants/colors';
 
-const DrinkReminder = () => {
+const DrinkReminder = ({navigation}) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [interval, setInterval] = useState('1'); // Default interval is set to 5 minutes
@@ -22,14 +22,29 @@ const DrinkReminder = () => {
   };
 
   useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to GNBScreen');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'GrundBedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
+  useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, you can access the user ID as user.uid
+       
         const userId = user.uid;
-        const userRef = doc(db, 'users', userId);
+        const userDocumentRef = doc(db, 'users', userId); 
 
-        const unsubscribeSnapshot = onSnapshot(userRef, (doc) => {
+        const unsubscribeSnapshot = onSnapshot(userDocumentRef, (doc) => {
           if (doc.exists()) {
             const userData = doc.data();
             setDrinkReminder(userData.drinkReminder || {});
@@ -40,49 +55,80 @@ const DrinkReminder = () => {
       }
     });
 
-    requestPermissionsAsync().then(({ granted }) => {
-      if (!granted) {
-        Alert.alert(
-          'Notification Rechte werden benötigt',
-          'Please enable notifications in the device settings to receive reminders.'
-        );
-      }
-    });
-
     return () => unsubscribe();
   }, []);
+
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userId = user.uid;
+        const userRef = doc(db, 'users', userId); 
+  
+        const unsubscribeSnapshot = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const userData = doc.data();
+            const userDrinkReminder = userData.drinkReminder?.settings || {};
+  
+            if (userDrinkReminder.startTime) {
+              setStartTime(new Date(userDrinkReminder.startTime));
+            }
+            if (userDrinkReminder.endTime) {
+              setEndTime(new Date(userDrinkReminder.endTime));
+            }
+            if (userDrinkReminder.interval) {
+              setInterval(userDrinkReminder.interval.toString());
+            }
+            if (userDrinkReminder.isEnabled !== undefined) {
+              setIsEnabled(userDrinkReminder.isEnabled);
+            }
+          }
+        });
+  
+        return () => {
+          unsubscribeSnapshot(); 
+        };
+      }
+    });
+  
+    return () => {
+      unsubscribe(); 
+    };
+  }, []);
+  
 
   useEffect(() => {
     if (isEnabled) {
       const intervalInMinutes = parseInt(interval, 10);
       const currentTime = new Date();
       const triggerTimes = [];
-      const futureTime = new Date(startTime); // Start from the chosen start time
+      const futureTime = new Date(startTime); 
 
-      // Loop to generate trigger times every `intervalInMinutes` minutes until the end time is reached
+     
       while (futureTime < endTime) {
         if (futureTime > currentTime) {
-          triggerTimes.push(new Date(futureTime)); // Create a new Date object here
+          triggerTimes.push(new Date(futureTime)); 
         }
         futureTime.setMinutes(futureTime.getMinutes() + intervalInMinutes);
       }
 
-      // Clear any previous notifications
+  
       cancelAllScheduledNotificationsAsync();
 
-      // Schedule notifications at trigger times
+    
       triggerTimes.forEach((triggerTime, index) => {
         console.log(`Scheduled Notification ${index + 1} for: ${triggerTime}`);
         scheduleNotificationAsync({
           content: {
             title: 'Drink Reminder',
-            body: 'Time to have a drink!',
+            body: 'Es ist Zeit wieder etwas zu Trinken!',
           },
           trigger: triggerTime,
         });
       });
     } else {
-      // Disable the reminder, so clear all scheduled notifications
+ 
       cancelAllScheduledNotificationsAsync();
     }
   }, [isEnabled, interval, startTime, endTime]);
@@ -92,26 +138,26 @@ const DrinkReminder = () => {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) {
-        return; // Exit if the user is not authenticated
+        return;
       }
 
       const userId = user.uid;
       const userRef = doc(db, 'users', userId);
-      const drinkReminderRef = collection(userRef, 'drinkReminder');
-      const settingsRef = doc(drinkReminderRef, 'settings');
       const intervalInMinutes = parseInt(interval, 10);
 
-      await updateDoc(settingsRef, {
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
-        interval: intervalInMinutes,
-        isEnabled: isEnabled,
+      await updateDoc(userRef, {
+        'drinkReminder.settings': {
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          interval: intervalInMinutes,
+          isEnabled: isEnabled,
+        },
       });
 
-      Alert.alert('Drink Reminder', 'Reminder settings saved successfully.');
+      Alert.alert('Drink Reminder', 'Reminder-Einstellungen erfolgreich angepasst.');
     } catch (error) {
-      console.error('Error updating reminder settings: ', error);
-      Alert.alert('Drink Reminder', 'Failed to save reminder settings. Please try again.');
+      console.error('Fehler beim Aktualisieren der Reminder-Einstellungen: ', error);
+      Alert.alert('Drink Reminder', 'Speichern der Einstellungen fehlgeschlagen, versuchen Sie es noch einmal.');
     }
   };
 
@@ -181,7 +227,7 @@ const DrinkReminder = () => {
       )}
 
       <View style={styles.switchContainer}>
-        <Text style={styles.label}>Enable Reminder</Text>
+        <Text style={styles.label}>Reminder setzen?</Text>
         <Switch
           trackColor={{ false: Colors.mediumGray, true: Colors.purple }}
           thumbColor={isEnabled ? Colors.orange : Colors.midGrey}
@@ -192,12 +238,12 @@ const DrinkReminder = () => {
       </View>
 
       <TouchableOpacity style={styles.saveButton} onPress={saveReminder}>
-        <Text style={styles.saveButtonText}>Save Reminder</Text>
+        <Text style={styles.saveButtonText}>Reminder speichern</Text>
       </TouchableOpacity>
       
 
       <Text style={styles.reminderStatus}>
-        {isEnabled ? 'Reminder Enabled' : 'Reminder Disabled'}
+        {isEnabled ? 'Erinnerung Ein' : 'Erinnerung Aus'}
       </Text>
     </View>
   );

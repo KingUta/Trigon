@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, Linking, BackHandler } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
@@ -8,11 +8,28 @@ import { requestPermissionsAsync, scheduleNotificationAsync, cancelAllScheduledN
 import * as Notifications from 'expo-notifications';
 import colors from '../constants/colors';
 
-const MotivationScreen = () => {
+const MotivationScreen = ({navigation}) => {
   const [quote, setQuote] = useState('Laden...');
   const [author, setAuthor] = useState('Laden...');
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to individual');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Individualbedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
+
 
   const randomQuote = () => {
     setIsLoading(true);

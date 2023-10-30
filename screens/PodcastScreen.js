@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, Modal, StyleSheet, TextInput, Button } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, Modal, StyleSheet, TextInput, Button} from 'react-native';
+
+import { BackHandler } from 'react-native'; 
+
 import { Audio } from 'expo-av';
 import { Client } from 'podcast-api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/colors';
 import { debounce } from 'lodash';
 
-const PodcastScreen = () => {
+const PodcastScreen = ({navigation}) => {
   const [podcasts, setPodcasts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sound, setSound] = useState();
@@ -130,6 +133,23 @@ const PodcastScreen = () => {
       </TouchableOpacity>
     );
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to selbst');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Selbstverwirklichung' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
+
   
   
   

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image, Alert, TextInput, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Image, Alert, TextInput, ScrollView,BackHandler } from 'react-native';
 import colors from '../constants/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { collection, addDoc, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
@@ -9,7 +9,7 @@ import { ContributionChart } from '../components/ContributionChart';
 import MoodCalendar from '../components/MoodKalender';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const MoodTracker = () => {
+const MoodTracker = ({navigation}) => {
   const [selectedMood, setSelectedMood] = useState('');
   const [reason, setReason] = useState('');
   const [textInput, setTextInput] = useState('');
@@ -22,9 +22,11 @@ const MoodTracker = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDateTimePicker, setShowDateTimePicker] = useState(false);
 
+
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), setUser);
-    return unsubscribe; // Unsubscribe on unmount
+    return unsubscribe; 
   }, []);
 
   const handleMoodButtonPress = (mood) => {
@@ -34,6 +36,21 @@ const MoodTracker = () => {
   const handleReasonButtonPress = (selectedReason) => {
     setReason(selectedReason);
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      console.log('Back button pressed, navigating to sicher');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Sicherheitsbedürfnisse' }],
+      });
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [navigation]);
 
   const handleSubmit = async () => {
     if (selectedMood.trim() !== '' && reason.trim() !== '') {
